@@ -1,8 +1,52 @@
-language: generic
-script: true
+language: node_js
+group: travis_latest
+os: linux
+sudo: false
+
+node_js:
+  - &latestTested 9
+  - 8
+  - 7
+  - 6
+  - "6.0"
+
+cache:
+  directories:
+    - node_modules
+before_cache: rm -rf node_modules/.cache
+
+script:
+  - npm run lint
+  - npm run typecheck
+  - npm run test -- --forbid-only --forbid-pending
+
+after_success: cat ./coverage/lcov.info | coveralls
+
+services:
+  - mongodb
 
 env:
   global:
     - TS_NODE_TYPE_CHECK=1
     - TS_NODE_CACHE_DIRECTORY=./node_modules/.cache/ts-node
-    - TS_NODE_PROJECT=./tsconfig.server.test.json
+    - TS_NODE_PROJECT=./tsconfig.test.json
+
+stages:
+  - Test
+  - Stub
+  - Stub2
+
+jobs:
+  include:
+    - stage: Stub
+      services: false
+      node_js: *latestTested
+      before_install: false
+      after_success: echo bar
+      script: echo foo
+    - stage: Stub2
+      services: false
+      node_js: *latestTested
+      before_install: false
+      after_success: echo qux
+      script: echo baz
