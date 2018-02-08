@@ -31,22 +31,22 @@ env:
     - TS_NODE_CACHE_DIRECTORY=./node_modules/.cache/ts-node
     - TS_NODE_PROJECT=./tsconfig.test.json
 
-stages:
-  - Test
-  - Stub
-  - Stub2
+#stages:
+#  - Test
+#  - Stub
+#  - Stub2
 
-jobs:
-  include:
-    - stage: Stub
-      services: false
-      node_js: *latestTested
-      before_install: false
-      after_success: echo bar
-      script: echo foo
-    - stage: Stub2
-      services: false
-      node_js: *latestTested
-      before_install: false
-      after_success: echo qux
-      script: echo baz
+#jobs:
+#  include:
+#    - stage: Stub
+#      services: false
+#      node_js: *latestTested
+#      before_install: false
+#      after_success: echo bar
+#      script: echo foo
+#    - stage: Stub2
+#      services: false
+#      node_js: *latestTested
+#      before_install: false
+#      after_success: echo qux
+#      script: echo baz
