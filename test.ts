@@ -6,7 +6,7 @@ import * as mongoose from 'mongoose';
 import {Document, Model, Schema} from 'mongoose';
 import * as path from 'path';
 import v4 = require('uuid/v4');
-import {AsyncTransform, MongooseTransformFieldPlugin, SyncTransform} from './plugin';
+import {AsyncTransform, MongooseTransformFieldPlugin, SyncTransform} from './index';
 
 describe('MongooseTransformFieldPlugin', () => {
   interface Base {
@@ -50,16 +50,16 @@ describe('MongooseTransformFieldPlugin', () => {
     let original: any;
 
     before('Back up original', () => {
-      original = MongooseTransformFieldPlugin['promise'];
+      original = MongooseTransformFieldPlugin.promiseLibrary;
     });
 
     after('Reset original', () => {
-      MongooseTransformFieldPlugin['promise'] = original;
+      MongooseTransformFieldPlugin.promiseLibrary = original;
     });
 
     it('Should set the value', () => {
       MongooseTransformFieldPlugin.promiseLibrary = 'foo';
-      expect(MongooseTransformFieldPlugin['promise']).to.eq('foo');
+      expect(MongooseTransformFieldPlugin.promiseLibrary).to.eq('foo');
     });
   });
 

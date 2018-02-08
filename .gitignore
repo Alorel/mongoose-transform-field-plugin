@@ -4,3 +4,6 @@
 /.nyc_output/
 /package-lock.json
 /.env
+/*.d.ts
+/index.js
+/test.js

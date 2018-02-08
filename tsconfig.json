@@ -3,9 +3,10 @@
     "target": "es2015",
     "strict": true,
     "module": "commonjs",
-    "declaration": false,
+    "declaration": true,
     "noImplicitAny": true,
     "strictPropertyInitialization": false,
+    "stripInternal": true,
     "strictNullChecks": true,
     "removeComments": false,
     "experimentalDecorators": true,
@@ -20,13 +21,14 @@
     "allowUnusedLabels": false,
     "moduleResolution": "node",
     "sourceMap": false,
-    "outDir": "dist/es2015",
+    "outDir": "./",
     "pretty": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
-    "alwaysStrict": true
+    "alwaysStrict": true,
+    "noImplicitUseStrict": false
   },
-  "include": [
-    "plugin.ts"
+  "files": [
+    "index.ts"
   ]
 }

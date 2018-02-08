@@ -3,7 +3,7 @@ import {Query, Schema} from 'mongoose';
 /**
  * Represents the completion of an asynchronous operation
  */
-interface Thenable<T> {
+export interface Thenable<T> {
   /**
    * Attaches a callback for only the rejection of the Promise.
    * @param reject The callback to execute when the Promise is rejected.
@@ -31,13 +31,58 @@ interface Update {
   [k: string]: any;
 }
 
+let promiseLib: typeof Promise = Promise;
+
+function normaliseTransformFn(inp: string): string {
+  return inp.toLowerCase();
+}
+
+function transformSyncInternal(schema: Schema,
+                               source: string,
+                               target: string,
+                               transformer: SyncTransform<any>): void {
+  schema.pre('save', function(this: any): void {
+    if (source in this) {
+      this[target] = transformer(this[source]);
+    }
+  });
+
+  const preUpdate = function(this: Query<any>): void {
+    const upd: Update = this.getUpdate() || {};
+
+    if (source in upd) {
+      this.update({
+        [target]: transformer(upd[source])
+      });
+    }
+    if (upd.$set && source in upd.$set) {
+      this.update({
+        $set: {
+          [target]: transformer(upd.$set[source])
+        }
+      });
+    }
+    if (upd.$setOnInsert && source in upd.$setOnInsert) {
+      this.update({
+        $setOnInsert: {
+          [target]: transformer(upd.$setOnInsert[source])
+        }
+      });
+    }
+  };
+
+  schema.pre('update', preUpdate);
+  schema.pre('findOneAndUpdate', preUpdate);
+}
+
 export class MongooseTransformFieldPlugin {
 
-  /** @internal */
-  private static promise: typeof Promise = Promise;
+  public static get promiseLibrary(): any {
+    return promiseLib;
+  }
 
   public static set promiseLibrary(lib: any) {
-    MongooseTransformFieldPlugin.promise = lib;
+    promiseLib = lib;
   }
 
   public static normalise(schema: Schema,
@@ -53,11 +98,11 @@ export class MongooseTransformFieldPlugin {
 
     //tslint:disable-next-line:no-magic-numbers
     for (let i = 0; i < fields.length; i += 2) {
-      MongooseTransformFieldPlugin.transformSyncInternal(
+      transformSyncInternal(
         schema,
         fields[i],
         fields[i + 1],
-        MongooseTransformFieldPlugin.normaliseTransformFn
+        normaliseTransformFn
       );
     }
 
@@ -88,7 +133,7 @@ export class MongooseTransformFieldPlugin {
       fn = <AsyncTransform<any>>possibleTransformer;
     }
 
-    function onSave(this: any, done: any): void {
+    const onSave = function(this: any, done: any): void {
       if (field in this) {
         fn(this[field])
           .then((res: any) => {
@@ -99,9 +144,9 @@ export class MongooseTransformFieldPlugin {
       } else {
         done();
       }
-    }
+    };
 
-    function onUpdate(this: Query<any>, done: any): void {
+    const onUpdate = function(this: Query<any>, done: any): void {
       const promises: Thenable<void>[] = [];
       const upd: Update = this.getUpdate() || <any>{};
 
@@ -132,12 +177,12 @@ export class MongooseTransformFieldPlugin {
         );
       }
 
-      MongooseTransformFieldPlugin.promise.all(promises)
+      promiseLib.all(promises)
         .then(() => {
           done();
         })
         .catch(done);
-    }
+    };
 
     if (parallel) {
       function updateWrapper(this: any, next: any, done: any): void {
@@ -163,7 +208,7 @@ export class MongooseTransformFieldPlugin {
   public static transformSync(schema: Schema,
                               field: string,
                               transformer: SyncTransform<any>): typeof MongooseTransformFieldPlugin {
-    MongooseTransformFieldPlugin.transformSyncInternal(
+    transformSyncInternal(
       schema,
       field,
       field,
@@ -171,49 +216,5 @@ export class MongooseTransformFieldPlugin {
     );
 
     return MongooseTransformFieldPlugin;
-  }
-
-  /** @internal */
-  private static normaliseTransformFn(inp: string): string {
-    return inp.toLowerCase();
-  }
-
-  /** @internal */
-  private static transformSyncInternal(schema: Schema,
-                                       source: string,
-                                       target: string,
-                                       transformer: SyncTransform<any>): void {
-    schema.pre('save', function(this: any): void {
-      if (source in this) {
-        this[target] = transformer(this[source]);
-      }
-    });
-
-    function preUpdate(this: Query<any>): void {
-      const upd: Update = this.getUpdate() || {};
-
-      if (source in upd) {
-        this.update({
-          [target]: transformer(upd[source])
-        });
-      }
-      if (upd.$set && source in upd.$set) {
-        this.update({
-          $set: {
-            [target]: transformer(upd.$set[source])
-          }
-        });
-      }
-      if (upd.$setOnInsert && source in upd.$setOnInsert) {
-        this.update({
-          $setOnInsert: {
-            [target]: transformer(upd.$setOnInsert[source])
-          }
-        });
-      }
-    }
-
-    schema.pre('update', preUpdate);
-    schema.pre('findOneAndUpdate', preUpdate);
   }
 }
