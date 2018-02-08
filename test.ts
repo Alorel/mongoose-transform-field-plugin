@@ -5,8 +5,9 @@ import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
 import {Document, Model, Schema} from 'mongoose';
 import * as path from 'path';
-import v4 = require('uuid/v4');
-import {AsyncTransform, MongooseTransformFieldPlugin, SyncTransform} from './index';
+import {v4} from 'uuid';
+import {MongooseTransformFieldPlugin} from './src/index';
+import {AsyncTransform, SyncTransform} from './types/Transform';
 
 describe('MongooseTransformFieldPlugin', () => {
   interface Base {
@@ -44,23 +45,6 @@ describe('MongooseTransformFieldPlugin', () => {
     }
 
     return mongoose.connect(connStr, opts);
-  });
-
-  describe('promiseLibrary', () => {
-    let original: any;
-
-    before('Back up original', () => {
-      original = MongooseTransformFieldPlugin.promiseLibrary;
-    });
-
-    after('Reset original', () => {
-      MongooseTransformFieldPlugin.promiseLibrary = original;
-    });
-
-    it('Should set the value', () => {
-      MongooseTransformFieldPlugin.promiseLibrary = 'foo';
-      expect(MongooseTransformFieldPlugin.promiseLibrary).to.eq('foo');
-    });
   });
 
   describe('transformSync', () => {

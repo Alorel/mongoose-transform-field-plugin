@@ -21,14 +21,16 @@
     "allowUnusedLabels": false,
     "moduleResolution": "node",
     "sourceMap": false,
-    "outDir": "./",
+    "outDir": "dist",
     "pretty": true,
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true,
     "noImplicitUseStrict": false
   },
-  "files": [
-    "index.ts"
-  ]
+  "include": [
+    "src",
+    "types"
+  ],
+  "exclude": []
 }

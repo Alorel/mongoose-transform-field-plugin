@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.json",
-  "files": [
-    "index.ts",
+  "include": [
+    "src",
+    "types",
     "test.ts"
   ]
 }
