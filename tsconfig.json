@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "strict": true,
+    "module": "commonjs",
+    "declaration": false,
+    "noImplicitAny": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": true,
+    "removeComments": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "newLine": "lf",
+    "noFallthroughCasesInSwitch": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "importHelpers": false,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "dist/es2015",
+    "pretty": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true
+  },
+  "include": [
+    "plugin.ts"
+  ]
+}
