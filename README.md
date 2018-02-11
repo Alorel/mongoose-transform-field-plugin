@@ -3,6 +3,7 @@
 An automatic field transformation plugin for Mongoose 5. Any transformations are registered as `save`, `update` and `findOneAndUpdate` middleware.
 
 [![NPM link](https://nodei.co/npm/mongoose-transform-field-plugin.svg?compact=true)](https://www.npmjs.com/package/mongoose-transform-field-plugin)
+
 [![Build Status](https://travis-ci.org/Alorel/mongoose-transform-field-plugin.svg?branch=master)](https://travis-ci.org/Alorel/mongoose-transform-field-plugin)
 [![Coverage Status](https://coveralls.io/repos/github/Alorel/mongoose-transform-field-plugin/badge.svg?branch=master)](https://coveralls.io/github/Alorel/mongoose-transform-field-plugin?branch=master)
 [![Greenkeeper badge](https://badges.greenkeeper.io/Alorel/mongoose-transform-field-plugin.svg)](https://greenkeeper.io/)

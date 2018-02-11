@@ -18,7 +18,7 @@ before_cache: rm -rf node_modules/.cache
 script:
   - npm run lint
   - npm run typecheck
-  - npm run test -- --forbid-only --forbid-pending
+  - npm run test -- --forbid-only --forbid-pending --timeout 20000
 
 after_success: cat ./coverage/lcov.info | coveralls
 
