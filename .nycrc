@@ -12,7 +12,7 @@
     "ts-node/register"
   ],
   "exclude": [
-    "test.ts"
+    "test"
   ],
   "sourceMap": true,
   "instrument": true,
