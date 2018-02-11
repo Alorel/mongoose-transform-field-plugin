@@ -1,5 +1,5 @@
-import * as diacritics from 'diacritics';
 import {Schema} from 'mongoose';
+import * as removeAccents from 'remove-accents';
 import {transformSyncInternal} from './_transformSyncInternal';
 
 /**
@@ -9,7 +9,7 @@ import {transformSyncInternal} from './_transformSyncInternal';
  */
 function normaliseTransformFn(inp: string | null | undefined): string | null | undefined {
   if (typeof inp === 'string') {
-    return diacritics.remove(inp.trim()).toLowerCase();
+    return removeAccents.remove(inp.trim()).toLowerCase();
   }
 
   return inp;
