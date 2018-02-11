@@ -3,7 +3,20 @@ import {Update} from '../types/_Update';
 import {Thenable} from '../types/Thenable';
 import {AsyncTransform} from '../types/Transform';
 
+/**
+ * Perform an asynchronous transformation on the given field
+ * @param schema Schema to apply the transformation to
+ * @param field Field to apply the transformation to
+ * @param transformer The transformation function. This should return a Promise.
+ */
 function transformAsync(schema: Schema, field: string, transformer: AsyncTransform<any>): void;
+/**
+ * Perform an asynchronous transformation on the given field
+ * @param schema Schema to apply the transformation to
+ * @param field Field to apply the transformation to
+ * @param parallel Whether or not this should run as parallel middleware
+ * @param transformer The transformation function. This should return a Promise.
+ */
 function transformAsync(schema: Schema, field: string, parallel: boolean, transformer: AsyncTransform<any>): void;
 function transformAsync(schema: Schema,
                         field: string,
@@ -101,12 +114,24 @@ function transformAsync(schema: Schema,
 }
 
 namespace transformAsync {
+  /** Options for applying the plugin as a schema plugin */
   export interface TransformAsyncOptions {
+    /** Field to apply the transformation to */
     field: string;
+    /**
+     * Whether this should act as a parallel Mongoose middleware
+     * @default false
+     */
     parallel?: boolean;
+    /** The transformation function. This should return a Promise. */
     transformer: AsyncTransform<any>;
   }
 
+  /**
+   * Perform an asynchronous transformation on the given field
+   * @param schema Schema to apply the transformation to
+   * @param options Configuration
+   */
   export function plugin(schema: Schema, options: TransformAsyncOptions): void {
     if (!options) {
       throw new TypeError('Options are required');

@@ -3,9 +3,10 @@ import * as removeAccents from 'remove-accents';
 import {transformSyncInternal} from './_transformSyncInternal';
 
 /**
+ * Accent removal and normalisation function
  * @internal
- * @param {string} inp
- * @returns {string}
+ * @param inp Input to transform
+ * @returns Transformed input
  */
 function normaliseTransformFn(inp: string | null | undefined): string | null | undefined {
   if (typeof inp === 'string') {
@@ -15,6 +16,13 @@ function normaliseTransformFn(inp: string | null | undefined): string | null | u
   return inp;
 }
 
+/**
+ * Normalise source fields into target fields. The target field values will be trimmed, lowercased and have their
+ * accented characters converted to base latin ones.
+ * @param schema Schema to apply the plugin to
+ * @param fields Fields to normalise. The keys should be the source, non-normalised fields while the values will hold
+ * the normalised output.
+ */
 function normalise(schema: Schema, fields: { [sourceField: string]: string }): void {
   if (!schema) {
     throw new Error('Schema is required');
@@ -42,8 +50,15 @@ function normalise(schema: Schema, fields: { [sourceField: string]: string }): v
 }
 
 namespace normalise {
-  export function plugin(schema: Schema, options: { [sourceField: string]: string }): void {
-    normalise(schema, options);
+  /**
+   * Normalise source fields into target fields. The target field values will be trimmed, lowercased and have their
+   * accented characters converted to base latin ones.
+   * @param schema Schema to apply the plugin to
+   * @param fields Fields to normalise. The keys should be the source, non-normalised fields while the values will hold
+   * the normalised output.
+   */
+  export function plugin(schema: Schema, fields: { [sourceField: string]: string }): void {
+    normalise(schema, fields);
   }
 }
 
