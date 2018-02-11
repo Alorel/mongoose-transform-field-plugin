@@ -106,12 +106,12 @@ describe('normalise', () => {
         });
 
         beforeEach('Create', async() => {
-          d = await model.create({foo: 'ONE', qux: 'TWO'});
+          d = await model.create({foo: 'ONè', qux: 'TWO'});
         });
 
         describe('Save', () => {
           it('foo should be ONE', () => {
-            expect(d.foo).to.eq('ONE');
+            expect(d.foo).to.eq('ONè');
           });
 
           it('bar should be one', () => {

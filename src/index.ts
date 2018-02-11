@@ -1,24 +1,23 @@
+import {LazyGetter} from 'typescript-lazy-get-decorator';
 import normalise = require('./normalise');
 import transformAsync = require('./transformAsync');
 import transformSync = require('./transformSync');
 
-export interface Plugin {
-  readonly normalise: typeof normalise;
-  readonly transformAsync: typeof transformAsync;
-  readonly transformSync: typeof transformSync;
-}
+//tslint:disable:no-var-requires
+export class MongooseTransformFieldPlugin {
 
-//tslint:disable:variable-name no-var-requires
-export const MongooseTransformFieldPlugin: Plugin = <any>{};
+  @LazyGetter()
+  public static get normalise(): typeof normalise {
+    return require('./normalise');
+  }
 
-for (const name of ['normalise', 'transformAsync', 'transformSync']) {
-  Object.defineProperty(MongooseTransformFieldPlugin, name, {
-    configurable: true,
-    get() {
-      const value: any = require(`./${name}`);
-      Object.defineProperty(MongooseTransformFieldPlugin, name, {value});
+  @LazyGetter()
+  public static get transformAsync(): typeof transformAsync {
+    return require('./transformAsync');
+  }
 
-      return value;
-    }
-  });
+  @LazyGetter()
+  public static get transformSync(): typeof transformSync {
+    return require('./transformSync');
+  }
 }

@@ -1,3 +1,4 @@
+import * as diacritics from 'diacritics';
 import {Schema} from 'mongoose';
 import {transformSyncInternal} from './_transformSyncInternal';
 
@@ -8,7 +9,7 @@ import {transformSyncInternal} from './_transformSyncInternal';
  */
 function normaliseTransformFn(inp: string | null | undefined): string | null | undefined {
   if (typeof inp === 'string') {
-    return inp.trim().toLowerCase();
+    return diacritics.remove(inp.trim()).toLowerCase();
   }
 
   return inp;
