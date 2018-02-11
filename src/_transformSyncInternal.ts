@@ -2,11 +2,22 @@ import {Query, Schema} from 'mongoose';
 import {Update} from '../types/_Update';
 import {SyncTransform} from '../types/Transform';
 
-/** @internal */
+/**
+ * Internal handler for synchronous transformations.
+ * @internal
+ * @param {"mongoose".Schema} schema The schema to apply this to
+ * @param {string} source The source field name
+ * @param {string} target The target field name
+ * @param {SyncTransform<any>} transformer The transformation function
+ */
 export function transformSyncInternal(schema: Schema,
                                       source: string,
                                       target: string,
                                       transformer: SyncTransform<any>): void {
+  if (!schema) {
+    throw new TypeError('Schema is required');
+  }
+
   schema.pre('save', function(this: any): void {
     if (this[source] !== undefined) {
       this[target] = transformer(this[source]);
