@@ -9,6 +9,12 @@ function transformAsync(schema: Schema,
                         field: string,
                         parallelOrTransformer: boolean | AsyncTransform<any>,
                         possibleTransformer?: AsyncTransform<any>): void {
+  if (!schema) {
+    throw new TypeError('Schema is required');
+  } else if (typeof field !== 'string' || !field) {
+    throw new TypeError('Field must be a non-empty string');
+  }
+
   let parallel: boolean;
   let fn: AsyncTransform<any>;
 
@@ -18,6 +24,10 @@ function transformAsync(schema: Schema,
   } else {
     parallel = parallelOrTransformer;
     fn = <AsyncTransform<any>>possibleTransformer;
+  }
+
+  if (typeof fn !== 'function') {
+    throw new TypeError('Transformer must be a function');
   }
 
   const onSave = function(this: any, done: any): void {
@@ -87,6 +97,22 @@ function transformAsync(schema: Schema,
     schema.pre('save', onSave);
     schema.pre('update', onUpdate);
     schema.pre('findOneAndUpdate', onUpdate);
+  }
+}
+
+namespace transformAsync {
+  export interface TransformAsyncOptions {
+    field: string;
+    parallel?: boolean;
+    transformer: AsyncTransform<any>;
+  }
+
+  export function plugin(schema: Schema, options: TransformAsyncOptions): void {
+    if (!options) {
+      throw new TypeError('Options are required');
+    }
+
+    transformAsync(schema, options.field, !!options.parallel, options.transformer);
   }
 }
 
