@@ -15,5 +15,6 @@
     "test.ts"
   ],
   "sourceMap": true,
-  "instrument": true
+  "instrument": true,
+  "cache": true
 }

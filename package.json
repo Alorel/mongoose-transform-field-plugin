@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "Easily apply field transformation middleware",
   "main": "dist/plugin.js",
+  "engines": {
+    "node": ">=6.0"
+  },
   "scripts": {
     "build": "rimraf dist && tsc",
     "typecheck": "tsc --noEmit",
     "typecheck:watch": "npm run typecheck -- --watch",
     "lint": "tslint -p ./tsconfig.test.json -s node_modules/custom-tslint-formatters/formatters -t grouped",
     "lint:fix": "npm run lint -- --fix",
-    "test": "rimraf coverage && nyc mocha --check-leaks --exit --full-trace -r ts-node/register -r source-map-support/register test.ts"
+    "test": "rimraf coverage && env-cmd ./.env nyc mocha --opts ./mocha.opts"
   },
   "repository": {
     "type": "git",
@@ -20,7 +23,9 @@
     "plugin",
     "field",
     "transform",
-    "middleware"
+    "middleware",
+    "normalise",
+    "normalisation"
   ],
   "author": {
     "name": "Arturas Molcanovas",
@@ -40,15 +45,15 @@
   },
   "devDependencies": {
     "@types/chai": "^4.1.2",
-    "@types/dotenv": "^4.0.2",
     "@types/lodash": "^4.14.102",
     "@types/mocha": "^2.2.48",
     "@types/node": "^9.4.2",
     "@types/uuid": "^3.4.3",
+    "bson": "*",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "custom-tslint-formatters": "^2.1.1",
-    "dotenv": "^5.0.0",
+    "env-cmd": "^7.0.0",
     "lodash": "^4.17.5",
     "mocha": "^5.0.0",
     "mongoose": "^5.0.3",

@@ -8,27 +8,27 @@ export function transformSyncInternal(schema: Schema,
                                       target: string,
                                       transformer: SyncTransform<any>): void {
   schema.pre('save', function(this: any): void {
-    if (source in this) {
+    if (this[source] !== undefined) {
       this[target] = transformer(this[source]);
     }
   });
 
   const preUpdate = function(this: Query<any>): void {
-    const upd: Update = this.getUpdate() || {};
+    const upd: Update = this.getUpdate() || /* istanbul ignore next */ {};
 
-    if (source in upd) {
+    if (upd[source] !== undefined) {
       this.update({
         [target]: transformer(upd[source])
       });
     }
-    if (upd.$set && source in upd.$set) {
+    if (upd.$set && upd.$set[source] !== undefined) {
       this.update({
         $set: {
           [target]: transformer(upd.$set[source])
         }
       });
     }
-    if (upd.$setOnInsert && source in upd.$setOnInsert) {
+    if (upd.$setOnInsert && upd.$setOnInsert[source] !== undefined) {
       this.update({
         $setOnInsert: {
           [target]: transformer(upd.$setOnInsert[source])

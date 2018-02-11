@@ -1,0 +1,10 @@
+--full-trace
+--check-leaks
+--exit
+-r ts-node/register
+-r source-map-support/register
+--globals __core-js_shared__
+--throw-deprecation
+--trace-warnings
+--use_strict
+test.ts

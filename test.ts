@@ -1,10 +1,9 @@
-//tslint:disable:no-duplicate-imports
+//tslint:disable:no-duplicate-imports no-unused-expression max-file-line-count
+import {ObjectID} from 'bson';
 import {expect} from 'chai';
-import * as dotenv from 'dotenv';
 import * as _ from 'lodash';
 import * as mongoose from 'mongoose';
 import {Document, Model, Schema} from 'mongoose';
-import * as path from 'path';
 import {v4} from 'uuid';
 import {MongooseTransformFieldPlugin} from './src/index';
 import {AsyncTransform, SyncTransform} from './types/Transform';
@@ -24,25 +23,11 @@ describe('MongooseTransformFieldPlugin', () => {
   let d: BaseDoc;
   let d2: BaseDoc;
 
-  before('Load env', () => {
-    const env = dotenv.config({
-      path: path.join(__dirname, '.env')
-    });
-
-    if (!env.error) {
-      Object.assign(process.env, env.parsed);
-    }
-  });
-
   before('Connect', () => {
     const connStr = <string>process.env.MONGODB_URL || `mongodb://127.0.0.1/mongoose-transform-field-test`;
     const opts: any = {};
 
     (<any>mongoose).Promise = Promise;
-
-    if ((mongoose.version || '').charAt(0) === '4') {
-      opts.useMongoClient = true;
-    }
 
     return mongoose.connect(connStr, opts);
   });
@@ -51,6 +36,7 @@ describe('MongooseTransformFieldPlugin', () => {
     before('init', () => {
       const sch = new Schema(
         {
+          bar: String,
           foo: String
         },
         {skipVersioning: true, versionKey: false}
@@ -68,14 +54,50 @@ describe('MongooseTransformFieldPlugin', () => {
       d = await model.create({foo: 'QUX'});
     });
 
+    it('Should skip if the field is not included in update', async() => {
+      await model.update({_id: d._id}, {foo: 'BAR'});
+      await model.update({_id: d._id}, {bar: v4()});
+      const f = <BaseDoc>await model.findById(d._id);
+      expect(f.foo).to.eq('bar');
+    });
+
+    it('Should skip if the field is not included save', async() => {
+      const f = await model.create({bar: v4()});
+      expect(f.foo).to.be.undefined;
+    });
+
     it('Should apply on save', () => {
       expect(d.foo).to.eq('qux');
     });
 
-    it('Should apply on update', async() => {
-      await d.update({foo: 'BAR'});
-      d = <BaseDoc>await model.findById(d._id);
-      expect(d.foo).to.eq('bar');
+    describe('Should apply on update', () => {
+      it('Without $set', async() => {
+        await d.update({foo: 'BAR'});
+        d = <BaseDoc>await model.findById(d._id);
+        expect(d.foo).to.eq('bar');
+      });
+      it('With $set', async() => {
+        await d.update({$set: {foo: 'BAR'}});
+        d = <BaseDoc>await model.findById(d._id);
+        expect(d.foo).to.eq('bar');
+      });
+      describe('With $setOnInsert', () => {
+        let f: BaseDoc;
+
+        before('run', async() => {
+          const _id = new ObjectID();
+          const upd = {$set: {bar: 'X'}, $setOnInsert: {foo: 'Y'}};
+          f = <BaseDoc>await model.findOneAndUpdate({_id}, upd, {upsert: true, new: true});
+        });
+
+        it('bar should be X', () => {
+          expect(f.bar).to.eq('X');
+        });
+
+        it('foo should be y', () => {
+          expect(f.foo).to.eq('y');
+        });
+      });
     });
 
     it('Should apply on findAndUpdate', async() => {
@@ -99,6 +121,7 @@ describe('MongooseTransformFieldPlugin', () => {
         before('init', () => {
           const sch = new Schema(
             {
+              bar: String,
               foo: String
             },
             {skipVersioning: true, versionKey: false}
@@ -114,14 +137,71 @@ describe('MongooseTransformFieldPlugin', () => {
           d = await model.create({foo: 'QUX'});
         });
 
+        describe('Should skip on save when field is absent', () => {
+          let f: BaseDoc;
+
+          before('Create', async function() {
+            f = await model.create({bar: 'foo'});
+          });
+
+          it('bar should be foo', () => {
+            expect(f.bar).to.eq('foo');
+          });
+
+          it('foo should be undefined', () => {
+            expect(f.foo).to.be.undefined;
+          });
+        });
+
+        describe('Should skip on update if field is absent', () => {
+          let f: BaseDoc;
+
+          before('Run', async() => {
+            f = <BaseDoc>await model.findByIdAndUpdate(d._id, {bar: 'boo'}, {new: true});
+          });
+
+          it('bar should be boo', () => {
+            expect(f.bar).to.eq('boo');
+          });
+
+          it('foo should be qux', () => {
+            expect(d.foo).to.eq('qux');
+          });
+        });
+
         it('Should apply on save', () => {
           expect(d.foo).to.eq('qux');
         });
 
-        it('Should apply on update', async() => {
-          await d.update({foo: 'BAR'});
-          d = <BaseDoc>await model.findById(d._id);
-          expect(d.foo).to.eq('bar');
+        describe('Should apply on update', () => {
+          it('Without $set', async() => {
+            await d.update({foo: 'BAR'});
+            d = <BaseDoc>await model.findById(d._id);
+            expect(d.foo).to.eq('bar');
+          });
+          it('With $set', async() => {
+            await d.update({$set: {foo: 'BAR'}});
+            d = <BaseDoc>await model.findById(d._id);
+            expect(d.foo).to.eq('bar');
+          });
+        });
+
+        describe('With $setOnInsert', () => {
+          let f: BaseDoc;
+
+          before('Run', async() => {
+            const _id = new ObjectID();
+            const upd = {$set: {bar: 'AAAH'}, $setOnInsert: {foo: 'AH'}};
+            f = <BaseDoc>await model.findByIdAndUpdate(_id, upd, {upsert: true, new: true});
+          });
+
+          it('bar should be AAAH', () => {
+            expect(f.bar).to.eq('AAAH');
+          });
+
+          it('foo should be ah', () => {
+            expect(f.foo).to.eq('ah');
+          });
         });
 
         it('Should apply on findAndUpdate', async() => {
