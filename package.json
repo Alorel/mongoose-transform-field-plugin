@@ -1,6 +1,6 @@
 {
   "name": "mongoose-transform-field-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An automatic field transformation plugin for Mongoose 5",
   "main": "dist/index.js",
   "engines": {
