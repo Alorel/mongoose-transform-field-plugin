@@ -1,3 +1,4 @@
+/** @internal */
 export interface Update {
   $set: any;
   $setOnInsert: any;

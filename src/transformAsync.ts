@@ -9,7 +9,7 @@ import {AsyncTransform} from '../types/Transform';
  * @param field Field to apply the transformation to
  * @param transformer The transformation function. This should return a Promise.
  */
-function transformAsync(schema: Schema, field: string, transformer: AsyncTransform<any>): void;
+function transformAsync<T = any>(schema: Schema, field: string, transformer: AsyncTransform<T>): void;
 /**
  * Perform an asynchronous transformation on the given field
  * @param schema Schema to apply the transformation to
@@ -17,11 +17,14 @@ function transformAsync(schema: Schema, field: string, transformer: AsyncTransfo
  * @param parallel Whether or not this should run as parallel middleware
  * @param transformer The transformation function. This should return a Promise.
  */
-function transformAsync(schema: Schema, field: string, parallel: boolean, transformer: AsyncTransform<any>): void;
-function transformAsync(schema: Schema,
-                        field: string,
-                        parallelOrTransformer: boolean | AsyncTransform<any>,
-                        possibleTransformer?: AsyncTransform<any>): void {
+function transformAsync<T = any>(schema: Schema,
+                                 field: string,
+                                 parallel: boolean,
+                                 transformer: AsyncTransform<T>): void;
+function transformAsync<T>(schema: Schema,
+                           field: string,
+                           parallelOrTransformer: boolean | AsyncTransform<T>,
+                           possibleTransformer?: AsyncTransform<T>): void {
   if (!schema) {
     throw new TypeError('Schema is required');
   } else if (typeof field !== 'string' || !field) {
@@ -115,7 +118,7 @@ function transformAsync(schema: Schema,
 
 namespace transformAsync {
   /** Options for applying the plugin as a schema plugin */
-  export interface TransformAsyncOptions {
+  export interface TransformAsyncOptions<T = any> {
     /** Field to apply the transformation to */
     field: string;
     /**
@@ -124,7 +127,7 @@ namespace transformAsync {
      */
     parallel?: boolean;
     /** The transformation function. This should return a Promise. */
-    transformer: AsyncTransform<any>;
+    transformer: AsyncTransform<T>;
   }
 
   /**
@@ -132,12 +135,17 @@ namespace transformAsync {
    * @param schema Schema to apply the transformation to
    * @param options Configuration
    */
-  export function plugin(schema: Schema, options: TransformAsyncOptions): void {
+  export function plugin(schema: Schema, options?: any): void {
     if (!options) {
       throw new TypeError('Options are required');
     }
 
-    transformAsync(schema, options.field, !!options.parallel, options.transformer);
+    transformAsync(
+      schema,
+      (<TransformAsyncOptions>options).field,
+      !!<any>(<TransformAsyncOptions>options).parallel,
+      (<TransformAsyncOptions>options).transformer
+    );
   }
 }
 

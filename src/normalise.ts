@@ -57,7 +57,7 @@ namespace normalise {
    * @param fields Fields to normalise. The keys should be the source, non-normalised fields while the values will hold
    * the normalised output.
    */
-  export function plugin(schema: Schema, fields: { [sourceField: string]: string }): void {
+  export function plugin(schema: Schema, fields?: any): void {
     normalise(schema, fields);
   }
 }

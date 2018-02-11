@@ -31,22 +31,24 @@ env:
     - TS_NODE_CACHE_DIRECTORY=./node_modules/.cache/ts-node
     - TS_NODE_PROJECT=./tsconfig.test.json
 
-#stages:
-#  - Test
-#  - Stub
-#  - Stub2
+stages:
+  - Test
+  - name: &releaseStage Release
+    if: tag IS present
 
-#jobs:
-#  include:
-#    - stage: Stub
-#      services: false
-#      node_js: *latestTested
-#      before_install: false
-#      after_success: echo bar
-#      script: echo foo
-#    - stage: Stub2
-#      services: false
-#      node_js: *latestTested
-#      before_install: false
-#      after_success: echo qux
-#      script: echo baz
+jobs:
+  include:
+    - stage: *releaseStage
+      services: false
+      node_js: *latestTested
+      script: npm run build
+      after_success: false
+      before_deploy: node ./update-version.js
+      deploy:
+        - provider: npm
+          on:
+            tags: true
+          skip_cleanup: true
+          email: a.molcanovas@gmail.com
+          api_key:
+            secure: "D8D0XyBCa2HzM/tq9PrU8bYIp8sHaZCxYJhZOnyELJ+vPf39nKW1vyVa34jcOab1JVbXS/Y29vPtd03FGPXPRZABJcjkXxBNW9o7u4khDKqZ2Z/498gvSZAIpSNrQzBQNPzwM1WZ4Fit1FIG24lzLIHCrfFV6pPc+urC8C6IO10MUqkRhE0TfyouHCXQkd59oZL7u3pSY/LB70bId5Noq8Cmr2bloDIZFwy5bZq3Udm4WX/+tMiO9qTDcwfZGX0uFPwumFJw/xURGHmmrbn+qarbRDH6RNa2MHMgkime/f1vR1K9J+22m6MqpH0aZ30EaaUGsXuBNwDPSSTc2Y+9RQE6D5sTZzBdtpHKAXa0ACiCFte+x+SCypHBubquSU0gkO+CDBoohVFG4h7pocawsMMfR5+IOKnBxBmiwJC8QjUYislzkUL9TS/ZmW9lrab8PQSKlpiXXdEWkI4pDxQbF4fDG33aveCKw+geB0vqh8iTVQphqhBbp3elZMuKl/fsbkCPloIgjIb+d8M3r7UVYC0wM9N2/FMr5NVKFL1e4r9X1GcusS0X4itFvqwuKlBYM9d1LLn1vPUnETfFKrA+sKvoJVVCuvZUyzZ7MnBLZ17djwuCrp0jb3AF+DKZUH35SvRjiMldflaHvzv5J94s7251uhTeSPx4MLmB6iogMXM="

@@ -8,7 +8,7 @@ import {transformSyncInternal} from './_transformSyncInternal';
  * @param field Field to apply the transformation to
  * @param transformer The transformation function.
  */
-function transformSync(schema: Schema, field: string, transformer: SyncTransform<any>): void {
+function transformSync<T = any>(schema: Schema, field: string, transformer: SyncTransform<T>): void {
   if (typeof field !== 'string' || !field) {
     throw new TypeError('The field must be a non-empty string');
   } else if (typeof transformer !== 'function') {
@@ -25,11 +25,11 @@ function transformSync(schema: Schema, field: string, transformer: SyncTransform
 
 namespace transformSync {
   /** Synchronous transformer options */
-  export interface TransformSyncOptions {
+  export interface TransformSyncOptions<T = any> {
     /** Field to apply the transformation to */
     field: string;
     /** The transformation function. */
-    transformer: SyncTransform<any>;
+    transformer: SyncTransform<T>;
   }
 
   /**
@@ -37,12 +37,12 @@ namespace transformSync {
    * @param schema Schema to apply the transformation to
    * @param options Configuration
    */
-  export function plugin(schema: Schema, options: TransformSyncOptions): void {
+  export function plugin(schema: Schema, options?: any): void {
     if (!options) {
       throw new Error('Options are required');
     }
 
-    transformSync(schema, options.field, options.transformer);
+    transformSync(schema, (<TransformSyncOptions>options).field, (<TransformSyncOptions>options).transformer);
   }
 }
 
