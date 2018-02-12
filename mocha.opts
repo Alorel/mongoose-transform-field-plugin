@@ -7,5 +7,6 @@
 --throw-deprecation
 --trace-warnings
 --use_strict
+--retries 3
 test/bootstrap.ts
 test/tests/*.ts
