@@ -47,7 +47,7 @@ function transformAsync<T>(schema: Schema,
   }
 
   const onSave = function(this: any, done: any): void {
-    if (this[field] !== undefined) {
+    if (this[field] !== undefined && this[field] !== null) {
       fn(this[field])
         .then((res: any) => {
           this[field] = res;
@@ -63,7 +63,7 @@ function transformAsync<T>(schema: Schema,
     const promises: Thenable<void>[] = [];
     const upd: Update = this.getUpdate() || /* istanbul ignore next */ <any>{};
 
-    if (upd[field] !== undefined) {
+    if (upd[field] !== undefined && upd[field] !== null) {
       promises.push(
         fn(upd[field])
           .then((res: any): void => {
@@ -72,7 +72,7 @@ function transformAsync<T>(schema: Schema,
       );
     }
 
-    if (upd.$set && upd.$set[field] !== undefined) {
+    if (upd.$set && upd.$set[field] !== undefined && upd.$set[field] !== null) {
       promises.push(
         fn(upd.$set[field])
           .then((res: any): void => {
@@ -81,7 +81,7 @@ function transformAsync<T>(schema: Schema,
       );
     }
 
-    if (upd.$setOnInsert && upd.$setOnInsert[field] !== undefined) {
+    if (upd.$setOnInsert && upd.$setOnInsert[field] !== undefined && upd.$setOnInsert[field] !== null) {
       promises.push(
         fn(upd.$setOnInsert[field])
           .then((res: any): void => {

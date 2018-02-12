@@ -19,7 +19,7 @@ export function transformSyncInternal(schema: Schema,
   }
 
   schema.pre('save', function(this: any): void {
-    if (this[source] !== undefined) {
+    if (this[source] !== undefined && this[source] !== null) {
       this[target] = transformer(this[source]);
     }
   });
@@ -27,19 +27,19 @@ export function transformSyncInternal(schema: Schema,
   const preUpdate = function(this: Query<any>): void {
     const upd: Update = this.getUpdate() || /* istanbul ignore next */ {};
 
-    if (upd[source] !== undefined) {
+    if (upd[source] !== undefined && upd[source] !== null) {
       this.update({
         [target]: transformer(upd[source])
       });
     }
-    if (upd.$set && upd.$set[source] !== undefined) {
+    if (upd.$set && upd.$set[source] !== undefined && upd.$set[source] !== null) {
       this.update({
         $set: {
           [target]: transformer(upd.$set[source])
         }
       });
     }
-    if (upd.$setOnInsert && upd.$setOnInsert[source] !== undefined) {
+    if (upd.$setOnInsert && upd.$setOnInsert[source] !== undefined && upd.$setOnInsert[source] !== null) {
       this.update({
         $setOnInsert: {
           [target]: transformer(upd.$setOnInsert[source])
