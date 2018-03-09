@@ -9,6 +9,9 @@ import {TransformSyncOptions} from '../../src/transformSync';
 import {SyncTransform} from '../../types/Transform';
 import {BaseDoc} from '../bootstrap';
 
+// false positive
+//tslint:disable:no-unnecessary-type-assertion
+
 describe('transformSync', () => {
   let model: Model<BaseDoc>;
   let d: BaseDoc;
@@ -108,7 +111,7 @@ describe('transformSync', () => {
           before('run', async() => {
             const _id = new ObjectID();
             const upd = {$set: {bar: 'X'}, $setOnInsert: {foo: 'Y'}};
-            f = await model.findOneAndUpdate({_id}, upd, {upsert: true, new: true});
+            f = <BaseDoc>await model.findOneAndUpdate({_id}, upd, {upsert: true, new: true});
           });
 
           it('bar should be X', () => {

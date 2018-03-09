@@ -9,6 +9,9 @@ import {TransformAsyncOptions} from '../../src/transformAsync';
 import {AsyncTransform} from '../../types/Transform';
 import {BaseDoc} from '../bootstrap';
 
+// false positive
+//tslint:disable:no-unnecessary-type-assertion
+
 describe('transformAsync', () => {
   it('Should throw if schema is not provided', () => {
     expect(() => MongooseTransformFieldPlugin.transformAsync(<any>0, '', <any>1))
@@ -164,7 +167,7 @@ describe('transformAsync', () => {
             before('Run', async() => {
               const _id = new ObjectID();
               const upd = {$set: {bar: 'AAAH'}, $setOnInsert: {foo: 'AH'}};
-              f = await model.findByIdAndUpdate(_id, upd, {upsert: true, new: true});
+              f = <BaseDoc>await model.findByIdAndUpdate(_id, upd, {upsert: true, new: true});
             });
 
             it('bar should be AAAH', () => {
