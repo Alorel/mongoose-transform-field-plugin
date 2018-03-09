@@ -108,7 +108,7 @@ describe('transformSync', () => {
           before('run', async() => {
             const _id = new ObjectID();
             const upd = {$set: {bar: 'X'}, $setOnInsert: {foo: 'Y'}};
-            f = <BaseDoc>await model.findOneAndUpdate({_id}, upd, {upsert: true, new: true});
+            f = await model.findOneAndUpdate({_id}, upd, {upsert: true, new: true});
           });
 
           it('bar should be X', () => {

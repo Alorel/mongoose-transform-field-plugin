@@ -164,7 +164,7 @@ describe('transformAsync', () => {
             before('Run', async() => {
               const _id = new ObjectID();
               const upd = {$set: {bar: 'AAAH'}, $setOnInsert: {foo: 'AH'}};
-              f = <BaseDoc>await model.findByIdAndUpdate(_id, upd, {upsert: true, new: true});
+              f = await model.findByIdAndUpdate(_id, upd, {upsert: true, new: true});
             });
 
             it('bar should be AAAH', () => {
