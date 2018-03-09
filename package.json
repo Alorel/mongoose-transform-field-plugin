@@ -14,7 +14,7 @@
     "typecheck:watch": "npm run typecheck -- --watch",
     "lint": "tslint -p ./tsconfig.test.json -s node_modules/custom-tslint-formatters/formatters -t grouped",
     "lint:fix": "npm run lint -- --fix",
-    "test": "rimraf coverage && env-cmd ./.env nyc mocha --opts ./mocha.opts"
+    "test": "rimraf coverage && cross-env TS_NODE_TYPE_CHECK=1 TS_NODE_CACHE_DIRECTORY=./node_modules/.cache/ts-node TS_NODE_PROJECT=./tsconfig.test.json nyc mocha --opts ./mocha.opts"
   },
   "repository": {
     "type": "git",
@@ -57,9 +57,9 @@
     "bson": "*",
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
+    "cross-env": "^5.1.3",
     "custom-tslint-formatters": "^2.1.1",
     "doctoc": "^1.3.0",
-    "env-cmd": "^7.0.0",
     "lodash": "^4.17.5",
     "mocha": "^5.0.0",
     "mongoose": "^5.0.3",
