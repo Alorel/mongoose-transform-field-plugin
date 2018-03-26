@@ -4,9 +4,8 @@ os: linux
 sudo: false
 
 node_js:
-  - &latestTested 9
+  - stable
   - lts/carbon
-  - 7
   - lts/boron
 
 cache:
@@ -14,10 +13,16 @@ cache:
     - node_modules
 before_cache: rm -rf node_modules/.cache
 
+before_install:
+  - npm install -g greenkeeper-lockfile
+  - greenkeeper-lockfile-update
+
 script:
   - npm run lint
   - npm run typecheck
-  - npm run test -- --forbid-only --forbid-pending --timeout 20000
+  - npm run test -- --forbid-only --forbid-pending --timeout 20000 --retries 3
+
+after_script: if [[ $GH_TOKEN ]]; then greenkeeper-lockfile-upload; fi;
 
 after_success: cat ./coverage/lcov.info | coveralls
 
@@ -32,9 +37,11 @@ stages:
 jobs:
   include:
     - stage: *releaseStage
-      services: false
-      node_js: *latestTested
+      services: []
+      node_js: stable
       script: npm run build
+      after_success: false
+      before_install: false
       after_success: false
       before_deploy: node ./update-version.js
       deploy:

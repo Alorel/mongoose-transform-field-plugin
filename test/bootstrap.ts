@@ -16,5 +16,5 @@ before('Connect', () => {
 
   (<any>mongoose).Promise = Promise;
 
-  return mongoose.connect(connStr, opts);
+  return <any>mongoose.connect(connStr, opts);
 });
