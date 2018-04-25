@@ -20,7 +20,7 @@ before_install:
 script:
   - npm run lint
   - npm run typecheck
-  - npm run test -- --forbid-only --forbid-pending --timeout 20000 --retries 3
+  - npm run test -- --forbid-only --forbid-pending --timeout 20000
 
 after_script: if [[ $GH_TOKEN ]]; then greenkeeper-lockfile-upload; fi;
 
