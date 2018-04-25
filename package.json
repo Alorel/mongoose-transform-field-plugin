@@ -7,6 +7,7 @@
     "node": ">=6.0"
   },
   "scripts": {
+    "reinstall": "rm -rf node_modules package-lock.json && npm install",
     "clean": "rimraf dist",
     "build": "npm run clean && tsc",
     "doctoc": "doctoc --github README.md",
@@ -65,7 +66,7 @@
     "mongoose": "^5.0.3",
     "nyc": "^11.5.0",
     "rimraf": "^2.6.2",
-    "source-map-support": "^0.5.3",
+    "source-map-support": "^0.5.5",
     "ts-node": "^6.0.0",
     "tslint": "^5.9.1",
     "typescript": "^2.7.1",
