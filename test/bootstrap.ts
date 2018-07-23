@@ -11,10 +11,9 @@ export interface BaseDoc extends Base, mongoose.Document {
 }
 
 before('Connect', () => {
-  const connStr = <string>process.env.MONGODB_URL || `mongodb://127.0.0.1/mongoose-transform-field-test`;
-  const opts: any = {};
+  const connStr = <string>process.env.MONGODB_URL || `mongodb://127.0.0.1:27017/mongoose-transform-field-test`;
 
   (<any>mongoose).Promise = Promise;
 
-  return <any>mongoose.connect(connStr, opts);
+  return <any>mongoose.connect(connStr, {useNewUrlParser: true});
 });
