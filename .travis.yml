@@ -17,6 +17,8 @@ before_install:
   - npm install -g greenkeeper-lockfile
   - greenkeeper-lockfile-update
 
+install: npm install
+
 script:
   - npm run lint
   - npm run typecheck
@@ -40,7 +42,6 @@ jobs:
       services: []
       node_js: stable
       script: npm run build
-      after_success: false
       before_install: false
       after_success: false
       before_deploy: node ./update-version.js
