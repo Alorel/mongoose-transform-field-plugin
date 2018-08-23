@@ -6,7 +6,6 @@ sudo: false
 node_js:
   - stable
   - lts/carbon
-  - lts/boron
 
 cache:
   directories:
